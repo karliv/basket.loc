@@ -1,0 +1,11 @@
+{
+  "result": 1,
+  "basket": [
+    {
+      "id_product": 12,
+      "price": 1000,
+      "title": "Нечто"
+    }
+  ],
+  "amount": 1000
+}
