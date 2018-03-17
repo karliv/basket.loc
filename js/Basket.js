@@ -34,36 +34,10 @@ Basket.prototype.render = function(root) {
 
     basketDiv.appendChild(basketTable);
     basketRoot.appendChild(basketDiv);
-
-
-    //var basketTHead = document.createElement('thead');
-    //var basketTBody = document.createElement('tbody');
-    //basketTBody.id = 'basket_items';
-    //var basketTR = document.createElement('tr');
-    //
-    //var tdInfo = [
-    //    {class: 'item-title', text: 'Наименование'},
-    //    {class: 'item-price', text: 'Цена'},
-    //    {class: 'item-count', text: 'Кол-во'}
-    //];
-    //
-    //for (var i = 0; i < tdInfo.length; i++) {
-    //    var basketTD = document.createElement('td');
-    //    basketTD.className = tdInfo[i].class;
-    //    basketTD.textContent = tdInfo[i].text;
-    //
-    //    basketTR.appendChild(basketTD);
-    //    //console.log(basketTR);
-    //}
-    //
-    //basketTable.appendChild(basketTHead);
-    //basketTHead.appendChild(basketTR);
-    //basketTable.appendChild(basketTBody);
-    //basketDiv.appendChild(basketTable);
 };
 
 Basket.prototype.loadBasketItems = function() {
-    var appendClassItem = '.basket';
+    var appendClassItem = document.getElementsByClassName('basket');
 
     var SBI = showBasketItems.bind(this);
 
@@ -99,50 +73,17 @@ Basket.prototype.loadBasketItems = function() {
 
         basketData.appendChild(allProducts);
         basketData.appendChild(totalAmount);
-        appendClassItem.appendChild(basketData);
+        appendClassItem[0].appendChild(basketData);
 
-        for (var itemKey in items.basket)
-        {
-            this.basketItems.push(data.items[itemKey]);
+        for (var itemKey in items.basket) {
+            if (items.basket.hasOwnProperty(itemKey)) {
+                this.basketItems.push(items.basket[itemKey]);
+            }
         }
 
         //Отабразить уже имеющиеся предметы в корзине
         this.release();
-
-        //items.forEach(function(item) {
-        //
-        //    var jsonItemBasket = document.createElement('option');
-        //    listCity.append('<option value="' + item.value + '">' + item.name + '</option>');
-        //});
     }
-
-    //$.ajax({
-    //    type: 'GET',
-    //    url: './json/basket.json',
-    //    context: this,
-    //    success: function(data) {
-    //        var $basketData = $('<div />', {
-    //            id: 'basket-data'
-    //        });
-    //
-    //        this.countGoods = data.basket.length;
-    //        this.amount = data.amount;
-    //
-    //        $basketData.append('<p>Всего товаров: ' + this.countGoods + '</p>');
-    //        $basketData.append('<p>Общая сумма: ' + this.amount + '</p>');
-    //
-    //        $basketData.appendTo(appendClassItem);
-    //
-    //        for (var itemKey in data.basket)
-    //        {
-    //            this.basketItems.push(data.basket[itemKey]);
-    //        }
-    //
-    //        //Отабразить уже имеющиеся предметы в корзине
-    //        this.release();
-    //    },
-    //    dataType: 'json'
-    //})
 };
 
 Basket.prototype.release = function() {
