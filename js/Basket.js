@@ -87,20 +87,21 @@ Basket.prototype.loadBasketItems = function() {
 };
 
 Basket.prototype.release = function() {
-    var $basketItemsDiv = $('#basket_items');
-    $basketItemsDiv.empty();
+    var basketItemsDiv = document.getElementById('basket_items');
+    basketItemsDiv.innerHTML = '';
 
     for (var i in this.basketItems) {
         if (this.basketItems.hasOwnProperty(i)) {
-            var $itemsList = $('<tr data-id-item="'+ this.basketItems[i].id_product +'">' +
-                '<td class="item-title">' + this.basketItems[i].title + '</td>' +
+            var itemList = document.createElement('tr');
+            itemList.setAttribute('data-id-item', this.basketItems[i].id_product);
+
+            itemList.innerHTML = '<td class="item-title">' + this.basketItems[i].title + '</td>' +
                 '<td class="item-price">' + this.basketItems[i].price +'</td>' +
                 '<td class="item-count"><span class="minus"> - </span><span class="count">1</span>' +
-                '<span class="plus"> + </span></td></tr>');
+                    '<span class="plus"> + </span></td>' +
+                '<td><button class="basket-btn">x</button></td>';
 
-            var $removeItem = $('<td><button class="basket-btn">x</button></td>');
-            $removeItem.appendTo($itemsList);
-            $itemsList.appendTo($basketItemsDiv);
+            basketItemsDiv.appendChild(itemList);
         }
     }
 };
@@ -120,41 +121,41 @@ Basket.prototype.add = function (idProduct, price, title) {
 };
 
 Basket.prototype.addItem = function(idProduct, price, title) {
-    var $basketItemsDiv = $('#basket_items');
+    var basketItemsDiv = document.getElementById('basket_items');
 
     var flag = false;
 
-    var $checkItems = $('#basket_items >');
-    console.log($checkItems);
+    for (var i = 0; i < basketItemsDiv.childNodes.length; i++) {
 
-    for (var i = 0; i < $checkItems.length; i++) {
-
-        var getID = $($checkItems[i]).data('id-item');
+        var getID = basketItemsDiv.childNodes[i].getAttribute('data-id-item');
 
         if( getID == idProduct){
             flag = true;
+            break;
         }
     }
 
     if (flag === true){
+        var findItemById = basketItemsDiv.querySelector('tr[data-id-item="' + idProduct + '"]');
+        var parseIntCount = findItemById.querySelector('td.item-count .count');
 
-        var findItemById = $basketItemsDiv.find('[data-id-item="' + idProduct + '"]');
-        var parseIntCount = parseInt($(findItemById).find('td.item-count .count').text());
-
-        $(findItemById).find('td.item-count .count').text(++parseIntCount);
+        parseInt(parseIntCount.textContent++);
     }
 
     if (flag === false) {
-        var $itemsList = $('<tr data-id-item="'+ idProduct +'">' +
-            '<td class="item-title">' + title + '</td>' +
+        var itemList = document.createElement('tr');
+        itemList.setAttribute('data-id-item', idProduct);
+
+        itemList.innerHTML = '<td class="item-title">' + title + '</td>' +
             '<td class="item-price">' + price +'</td>' +
             '<td class="item-count"><span class="minus"> - </span><span class="count">1</span>' +
-            '<span class="plus"> + </span></td></tr>');
+                '<span class="plus"> + </span></td>' +
+            '<td><button class="basket-btn">x</button></td>';
 
-        var $removeItem = $('<td><button class="basket-btn">x</button></td>');
-        $removeItem.appendTo($itemsList);
-        $itemsList.appendTo($basketItemsDiv);
+        basketItemsDiv.appendChild(itemList);
     }
+
+    console.log(basketItemsDiv.childNodes);
 };
 
 Basket.prototype.countPlus = function(idProduct, quantity, price, title){

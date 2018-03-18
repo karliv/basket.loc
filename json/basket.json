@@ -5,7 +5,12 @@
       "id_product": 12,
       "price": 1000,
       "title": "Нечто"
+    },
+    {
+      "id_product": 19,
+      "price": 100,
+      "title": "ghgf"
     }
   ],
-  "amount": 1000
+  "amount": 1100
 }
