@@ -139,7 +139,7 @@ Basket.prototype.addItem = function(idProduct, price, title) {
         var findItemById = basketItemsDiv.querySelector('tr[data-id-item="' + idProduct + '"]');
         var parseIntCount = findItemById.querySelector('td.item-count .count');
 
-        parseInt(parseIntCount.textContent++);
+        parseIntCount.textContent++;
     }
 
     if (flag === false) {
@@ -165,41 +165,47 @@ Basket.prototype.countPlus = function(idProduct, quantity, price, title){
         "title": title
     };
 
-    var findItemById = $('#basket_items').find('[data-id-item="' + idProduct + '"]');
+    var basketItemsDiv = document.getElementById('basket_items');
 
-    $(findItemById).find('td.item-count .count').text(++quantity);
+    var findItemById = basketItemsDiv.querySelector('tr[data-id-item="' + idProduct + '"]');
+    var parseIntCount = findItemById.querySelector('td.item-count .count');
+
+    parseIntCount.textContent = ++quantity;
 
     this.countGoods++;
     this.amount += price;
 
     this.basketItems.push(basketItem);
     console.log(this.basketItems);
+
     this.refresh(); //Перерисовываем корзину
 };
 
 Basket.prototype.countMinus = function(idProduct, quantity, price){
+    var basketItemsDiv = document.getElementById('basket_items');
 
-    var findItemById = $('#basket_items').find('[data-id-item="' + idProduct + '"]');
+    var findItemById = basketItemsDiv.querySelector('tr[data-id-item="' + idProduct + '"]');
+    var parseIntCount = findItemById.querySelector('td.item-count .count');
 
     if(quantity == 1){
-        $(findItemById).remove();
+        findItemById.parentNode.removeChild(findItemById);
     }
+
     if(quantity > 1){
-        $(findItemById).find('td.item-count .count').text(--quantity);
+        parseIntCount.textContent = --quantity
     }
 
     this.countGoods--;
     this.amount -= price;
 
-    //this.basketItems.splice(index, 1);
-    var j = 0;
-    while (j < this.basketItems.length) {
-        if (this.basketItems[j].id_product === idProduct) {
-            this.basketItems.splice(j, 1);
+    var i = 0;
+    while (i < this.basketItems.length) {
+        if (this.basketItems[i].id_product === idProduct) {
+            this.basketItems.splice(i, 1);
 
             break;
         } else {
-            j++;
+            i++;
         }
     }
 
@@ -209,11 +215,11 @@ Basket.prototype.countMinus = function(idProduct, quantity, price){
 };
 
 Basket.prototype.refresh = function () {
-    var $basketData = $('#basket-data');
+    var basketData = document.getElementById('basket-data');
+    var itemP = basketData.querySelectorAll('p');
 
-    $basketData.empty(); //Очищаем содержимое контейнера
-    $basketData.append('<p>Всего товаров: ' + this.countGoods + '</p>');
-    $basketData.append('<p>Общая сумма: ' + this.amount + '</p>');
+    itemP[0].textContent = 'Всего товаров: ' + this.countGoods;
+    itemP[1].textContent = 'Общая сумма: ' + this.amount;
 };
 
 Basket.prototype.remove = function(idProduct, quantity, price) {
@@ -222,18 +228,20 @@ Basket.prototype.remove = function(idProduct, quantity, price) {
     this.countGoods -= quantity;
     this.amount -= getAllPriceThisProduct;
 
-    //this.basketItems.splice(index, quantity);
-    var j = 0;
-    while (j < this.basketItems.length) {
-        if (this.basketItems[j].id_product === idProduct) {
-            this.basketItems.splice(j, 1);
+    var i = 0;
+    while (i < this.basketItems.length) {
+        if (this.basketItems[i].id_product === idProduct) {
+            this.basketItems.splice(i, 1);
         } else {
-            j++;
+            i++;
         }
     }
 
-    $('#basket_items').find('[data-id-item="' + idProduct + '"]').remove();
-    console.log(this.basketItems);
+    var basketItemsDiv = document.getElementById('basket_items');
 
+    var findItemById = basketItemsDiv.querySelector('tr[data-id-item="' + idProduct + '"]');
+    findItemById.parentNode.removeChild(findItemById);
+
+    console.log(this.basketItems);
     this.refresh();
 };
