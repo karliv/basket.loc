@@ -40,7 +40,7 @@ $(document).ready(function() {
             } else if (elem == 'span.minus') {
                 basket.countMinus(getID, quantity, price);
             } else if (elem == 'span.plus') {
-                basket.countPlus(getID, quantity, price, title);
+                basket.countPlus(getID, quantity, price);
             }
             //basket.remove(getID, quantity, price, this.dataset.index);
         });

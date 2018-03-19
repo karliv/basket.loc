@@ -28,9 +28,9 @@ Basket.prototype.render = function(root) {
 
     // Отрисовываем таблицу
     var basketTable = document.createElement('table');
-    basketTable.innerHTML = '<table><thead><tr><td class="item-title">Наименование</td>' +
+    basketTable.innerHTML = '<thead><tr><td class="item-title">Наименование</td>' +
         '<td class="item-price">Цена</td><td class="item-count">Кол-во</td></tr></thead>' +
-        '<tbody id="basket_items"></tbody></table>';
+        '<tbody id="basket_items"></tbody>';
 
     basketDiv.appendChild(basketTable);
     basketRoot.appendChild(basketDiv);
@@ -62,7 +62,7 @@ Basket.prototype.loadBasketItems = function() {
         var basketData = document.createElement('div');
         basketData.id = 'basket-data';
 
-        this.countGoods = items.basket.length;
+        this.countGoods = items.countGoods;
         this.amount = items.amount;
 
         var allProducts = document.createElement('p');
@@ -97,7 +97,8 @@ Basket.prototype.release = function() {
 
             itemList.innerHTML = '<td class="item-title">' + this.basketItems[i].title + '</td>' +
                 '<td class="item-price">' + this.basketItems[i].price +'</td>' +
-                '<td class="item-count"><span class="minus"> - </span><span class="count">1</span>' +
+                '<td class="item-count"><span class="minus"> - </span>' +
+                    '<span class="count">' + this.basketItems[i].quantity +'</span>' +
                     '<span class="plus"> + </span></td>' +
                 '<td><button class="basket-btn">x</button></td>';
 
@@ -110,12 +111,32 @@ Basket.prototype.add = function (idProduct, price, title) {
     var basketItem = {
         "id_product": idProduct,
         "price": price,
-        "title": title
+        "title": title,
+        "quantity": 1
     };
 
     this.countGoods++;
     this.amount += price;
-    this.basketItems.push(basketItem);
+
+    var i = 0;
+    while (i < this.basketItems.length) {
+        if (this.basketItems[i].id_product === idProduct) {
+            this.basketItems[i].quantity++;
+
+            break;
+        } else if (i === this.basketItems.length - 1) {
+            this.basketItems.push(basketItem);
+
+            break;
+        } else {
+            i++;
+        }
+    }
+
+    if (this.basketItems.length === 0) {
+        this.basketItems.push(basketItem);
+    }
+
     this.addItem(idProduct, price, title);
     this.refresh(); //Перерисовываем корзину
 };
@@ -158,13 +179,7 @@ Basket.prototype.addItem = function(idProduct, price, title) {
     console.log(basketItemsDiv.childNodes);
 };
 
-Basket.prototype.countPlus = function(idProduct, quantity, price, title){
-    var basketItem = {
-        "id_product": idProduct,
-        "price": price,
-        "title": title
-    };
-
+Basket.prototype.countPlus = function(idProduct, quantity, price){
     var basketItemsDiv = document.getElementById('basket_items');
 
     var findItemById = basketItemsDiv.querySelector('tr[data-id-item="' + idProduct + '"]');
@@ -175,7 +190,16 @@ Basket.prototype.countPlus = function(idProduct, quantity, price, title){
     this.countGoods++;
     this.amount += price;
 
-    this.basketItems.push(basketItem);
+    var i = 0;
+    while (i < this.basketItems.length) {
+        if (this.basketItems[i].id_product === idProduct) {
+            this.basketItems[i].quantity++;
+
+            break;
+        } else {
+            i++;
+        }
+    }
     console.log(this.basketItems);
 
     this.refresh(); //Перерисовываем корзину
@@ -201,7 +225,11 @@ Basket.prototype.countMinus = function(idProduct, quantity, price){
     var i = 0;
     while (i < this.basketItems.length) {
         if (this.basketItems[i].id_product === idProduct) {
-            this.basketItems.splice(i, 1);
+            if (this.basketItems[i].quantity === 1) {
+                this.basketItems.splice(i, 1);
+            } else {
+                this.basketItems[i].quantity--;
+            }
 
             break;
         } else {
@@ -232,6 +260,8 @@ Basket.prototype.remove = function(idProduct, quantity, price) {
     while (i < this.basketItems.length) {
         if (this.basketItems[i].id_product === idProduct) {
             this.basketItems.splice(i, 1);
+
+            break;
         } else {
             i++;
         }

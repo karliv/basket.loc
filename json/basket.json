@@ -3,14 +3,17 @@
   "basket": [
     {
       "id_product": 12,
-      "price": 1000,
-      "title": "Нечто"
+      "price": 2100,
+      "title": "Стабилизатор напряжения",
+      "quantity": 2
     },
     {
       "id_product": 19,
-      "price": 100,
-      "title": "ghgf"
+      "price": 45600,
+      "title": "Ноутбук",
+      "quantity": 1
     }
   ],
-  "amount": 1100
+  "amount": 49800,
+  "countGoods": 3
 }
