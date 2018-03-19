@@ -242,6 +242,14 @@ Basket.prototype.countMinus = function(idProduct, quantity, price){
     this.refresh();
 };
 
+Basket.prototype.refresh = function () {
+    var basketData = document.getElementById('basket-data');
+    var itemP = basketData.querySelectorAll('p');
+
+    itemP[0].textContent = 'Всего товаров: ' + this.countGoods;
+    itemP[1].textContent = 'Общая сумма: ' + this.amount;
+};
+
 Basket.prototype.remove = function(idProduct, quantity, price) {
     var getAllPriceThisProduct = quantity * price;
 
@@ -266,12 +274,4 @@ Basket.prototype.remove = function(idProduct, quantity, price) {
 
     console.log(this.basketItems);
     this.refresh();
-};
-
-Basket.prototype.refresh = function () {
-    var basketData = document.getElementById('basket-data');
-    var itemP = basketData.querySelectorAll('p');
-
-    itemP[0].textContent = 'Всего товаров: ' + this.countGoods;
-    itemP[1].textContent = 'Общая сумма: ' + this.amount;
 };

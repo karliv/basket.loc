@@ -1,75 +1,54 @@
 "use strict";
 
-window.onload = function() {
-    var SG = renderGoods.bind(this);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', './json/getGoodById.json', true); //Асинхронный запрос
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState !== 4) {
-            return;
-        }
 
-        if(xhr.status === 200){
-            SG(JSON.parse(xhr.responseText));
-        } else {
-            console.log('Error', xhr.status, xhr.statusText);
-        }
-    };
+$(document).ready(function() {
+    var good1 = new Good(125, 'Клавиатура для ПК', 1000);
+    good1.render('goods');
 
-    xhr.send();
+    var good2 = new Good(126, 'Коврик для мыши', 400);
+    good2.render('goods');
 
-    function renderGoods(items) {
-        for (var itemGoods in items) {
-            if (items.hasOwnProperty(itemGoods)) {
-                new Good(items[itemGoods].product_id, items[itemGoods].product_name, items[itemGoods].product_price).render('goods');
-            }
-        }
-    }
+    var good3 = new Good(127, 'Колонки', 1762);
+    good3.render('goods');
 
-    // Отрисовка корзины
+    var good4 = new Good(128, 'Микрофон', 150);
+    good4.render('goods');
+
     var basket = new Basket('basket');
     basket.render('basket');
 
-    var goodBtn = document.querySelector('#goods');
-    goodBtn.addEventListener('click', function(event) {addGoods(event)});
-
-    // Функция добавления товара по клику
-    function addGoods(event) {
-        if (event.target.tagName !== 'BUTTON') {
-            return;
-        }
-
-        var idProduct = parseInt(event.target.getAttribute('data-id'));
-        var price = parseInt(event.target.parentNode.querySelector('.good-price').textContent);
-        var title = event.target.parentNode.querySelector('.good-title').textContent;
-        basket.add(idProduct, price, title);
+    $('.good-btn').click(function () {
+        var idProduct = parseInt($(this).attr('data-id'));
+        var price = parseInt($(this).parent().find('.good-price').text());
+        var title = $(this).parent().find('.good-title').text();
+        basket.add(idProduct, price, title, this.dataset.index);
         console.log(basket.basketItems);
-    }
+    });
 
-    // Объявление обработчика событий по клику для кнопки в карзине
-    var basketBtn = document.querySelector('.basket');
-    basketBtn.addEventListener('click', function(event) {changeBasket(event)});
+    function delItem(elem) {
+        $('.basket').on('click', elem, function () {
+            var getID = parseInt($(this).parent().parent().attr('data-id-item'));
+            var quantity = parseInt($(this).parent().parent().find('td.item-count .count').text());
+            var price = parseInt($(this).parent().parent().find('.item-price').text());
+            var title = $(this).parent().parent().find('.item-title').text();
 
-    // Функция добавления/убавления кол-во товара на 1, по клику или же полное его удаление
-    function changeBasket(event) {
-        if (event.target.tagName === 'SPAN' || event.target.tagName === 'BUTTON') {
-            var getID = parseInt(event.target.parentNode.parentNode.getAttribute('data-id-item'));
-            var quantity = parseInt(event.target.parentNode.parentNode.querySelector('td.item-count .count').textContent);
-            var price = parseInt(event.target.parentNode.parentNode.querySelector('.item-price').textContent);
-
-            if (event.target.className == 'basket-btn') {
+            //console.log(this.dataset.index);
+            if (elem == '.basket-btn') {
                 basket.remove(getID, quantity, price);
-            } else if (event.target.className == 'minus') {
+            } else if (elem == 'span.minus') {
                 basket.countMinus(getID, quantity, price);
-            } else if (event.target.className == 'plus') {
+            } else if (elem == 'span.plus') {
                 basket.countPlus(getID, quantity, price);
             }
-        } else {
-            return;
-        }
+            //basket.remove(getID, quantity, price, this.dataset.index);
+        });
     }
+
+    delItem('.basket-btn');
+    delItem('span.minus');
+    delItem('span.plus');
 
     //$('#show_basket').click(function() {
     //    if ($(this).text() === 'Показать корзину') {
@@ -80,4 +59,4 @@ window.onload = function() {
     //    //console.log($(this).text());
     //    $('#basket').fadeToggle(800);
     //});
-};
+});

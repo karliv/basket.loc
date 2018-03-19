@@ -8,3 +8,7 @@ function Container(id) {
 Container.prototype.render = function() {
     return this.htmlCode;
 };
+
+//Container.prototype.remove = function () {
+//
+//};
